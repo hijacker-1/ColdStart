@@ -19,7 +19,7 @@ type Distributor struct {
 type Node struct {
 	id          uint
 	memory      uint32
-	containers  map[uint64]*container.Container
+	Containers  map[uint64]*container.Container
 	reporter    Reporter
 	distributor Distributor
 }
@@ -29,7 +29,7 @@ func NewNode(id uint, memory uint32) *Node {
 		id:          id,
 		memory:      memory,
 		reporter:    Reporter{},
-		containers:  make(map[uint64]*container.Container),
+		Containers:  make(map[uint64]*container.Container),
 		distributor: Distributor{},
 	}
 }
@@ -47,7 +47,7 @@ func (n *Node) Memory() uint32 {
 // cc: The container to be added.
 func (n *Node) CreateContainer(cc *container.Container) {
 	// TODO config that if it can create a new container
-	n.containers[cc.ID()] = cc
+	n.Containers[cc.ID()] = cc
 	n.memory -= cc.MemoryUsed()
 }
 
@@ -59,7 +59,7 @@ func (n *Node) DeleteContainer(cc *container.Container) {
 	n.memory += cc.MemoryUsed()
 
 	// Delete the container from the list of containers
-	delete(n.containers, cc.ID())
+	delete(n.Containers, cc.ID())
 
 	// Perform post-deletion processing
 	cc.Delete()
@@ -70,9 +70,4 @@ func (n *Node) DeleteContainer(cc *container.Container) {
 
 func (n *Node) ReuseContainer(cc *container.Container) {
 	// TODO 重用容器
-}
-
-func (n *Node) GetListOfReleased() []*container.Container {
-	// TODO 获得可以被释放的容器
-	return nil
 }

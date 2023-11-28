@@ -9,6 +9,7 @@ package scheduler
 import (
 	"container/list"
 	"fcas/node"
+	"fcas/releaser"
 	"fcas/task"
 	"fcas/tracker"
 )
@@ -38,7 +39,7 @@ func chooseNode(task *task.Task) (*node.Node, bool) {
 	// 如果没有拥有足够资源的节点，通过释放空闲容器可以满足计算要求，返回该节点
 	for node := range tracker.NodeRecord {
 		memorySum := node.Memory()
-		for _, ctn := range node.GetListOfReleased() {
+		for _, ctn := range releaser.GetListOfReleased(node) {
 			memorySum += ctn.MemoryUsed()
 			if memorySum >= task.Type().Memory() {
 				return node, false
